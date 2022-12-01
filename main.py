@@ -363,6 +363,7 @@ while run:
                 rfStart = -1
 
 # controles do jogo
+
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
             player.paraEsquerda()
