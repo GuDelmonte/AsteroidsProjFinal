@@ -8,10 +8,8 @@ sw = 800
 sh = 800
 
 # adicionando imagens
-bg = pygame.image.load('asteroidsPics/starbg.png')
-alienImg = pygame.image.load('asteroidsPics/alienShip.png')
-playerRocket = pygame.image.load('asteroidsPics/spaceRocket.png')
-estrela = pygame.image.load('asteroidsPics/star.png')
+bg = pygame.image.load('/Users/u21771/AsteroidsJogo/AsteroidsProjFinal/asteroidsPics/starbg.png')
+playerRocket = pygame.image.load('/Users/u21771/AsteroidsJogo/AsteroidsProjFinal')
 asteroid50 = pygame.image.load('asteroidsPics/asteroid50.png')
 asteroid100 = pygame.image.load('asteroidsPics/asteroid100.png')
 asteroid150 = pygame.image.load('asteroidsPics/asteroid150.png')
@@ -121,10 +119,8 @@ class Asteroid(object):
         self.rank = rank
         if self.rank == 1:
             self.image = asteroid50
-        elif self.rank == 2:
-            self.image = asteroid100
         else:
-            self.image = asteroid150
+            self.image = asteroid100
         self.w = 50 * rank
         self.h = 50 * rank
         self.ranPoint = random.choice([(random.randrange(0, sw-self.w), random.choice([-1*self.h - 5, sh + 5])), (random.choice([-1*self.w - 5, sw + 5]), random.randrange(0, sh - self.h))])
@@ -143,68 +139,6 @@ class Asteroid(object):
     def draw(self, ganhar):
         ganhar.blit(self.image, (self.x, self.y))
 
-# funções da estrela
-class Estrela(object):
-    def __init__(self):
-        self.img = estrela
-        self.w = self.img.get_width()
-        self.h = self.img.get_height()
-        self.ranPoint = random.choice([(random.randrange(0, sw - self.w), random.choice([-1 * self.h - 5, sh + 5])),
-                                       (random.choice([-1 * self.w - 5, sw + 5]), random.randrange(0, sh - self.h))])
-        self.x, self.y = self.ranPoint
-        if self.x < sw//2:
-            self.xdir = 1
-        else:
-            self.xdir = -1
-        if self.y < sh//2:
-            self.ydir = 1
-        else:
-            self.ydir = -1
-        self.xv = self.xdir * 2
-        self.yv = self.ydir * 2
-
-    def draw(self, ganhar):
-        ganhar.blit(self.img, (self.x, self.y))
-
-# funções da nave alien
-class Alien(object):
-    def __init__(self):
-        self.img = alienImg
-        self.w = self.img.get_width()
-        self.h = self.img.get_height()
-        self.ranPoint = random.choice([(random.randrange(0, sw - self.w), random.choice([-1 * self.h - 5, sh + 5])),
-                                    (random.choice([-1 * self.w - 5, sw + 5]), random.randrange(0, sh - self.h))])
-        self.x, self.y = self.ranPoint
-        if self.x < sw//2:
-            self.xdir = 1
-        else:
-            self.xdir = -1
-        if self.y < sh//2:
-            self.ydir = 1
-        else:
-            self.ydir = -1
-        self.xv = self.xdir * 2
-        self.yv = self.ydir * 2
-
-    def draw(self, ganhar):
-        ganhar.blit(self.img, (self.x, self.y))
-
-# Funções da bala da nave alien 
-class AlienBala(object):
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-        self.w = 4
-        self.h = 4
-        self.dx, self.dy = player.x - self.x, player.y - self.y
-        self.dist = math.hypot(self.dx, self.dy)
-        self.dx, self.dy = self.dx / self.dist, self.dy / self.dist
-        self.xv = self.dx * 5
-        self.yv = self.dy * 5
-
-    def draw(self, ganhar):
-        pygame.draw.rect(ganhar, (255, 255, 255), [self.x, self.y, self.w, self.h])
-
 def redrawGameWindow():
     ganhar.blit(bg, (0,0))
     font = pygame.font.SysFont('arial',30)
@@ -219,12 +153,6 @@ def redrawGameWindow():
     for a in asteroids:
         a.draw(ganhar)
     for b in playerBalas:
-        b.draw(ganhar)
-    for s in estrelas:
-        s.draw(ganhar)
-    for a in aliens:
-        a.draw(ganhar)
-    for b in alienBalas:
         b.draw(ganhar)
 
     if rapidFire:
@@ -243,9 +171,6 @@ player = Player()
 playerBalas = []
 asteroids = []
 count = 0
-estrelas = []
-aliens = []
-alienBalas = []
 run = True
 
 while run:
@@ -256,39 +181,15 @@ while run:
         if count % 50 == 0:
             ran = random.choice([1,1,1,2,2,3])
             asteroids.append(Asteroid(ran))
-        if count % 1000 == 0:
-            estrelas.append(estrela())
-        if count % 750 == 0:
-            aliens.append(Alien())
-        for i, a in enumerate(aliens):
-            a.x += a.xv
-            a.y += a.yv
-            if a.x > sw + 150 or a.x + a.w < -100 or a.y > sh + 150 or a.y + a.h < -100:
-                aliens.pop(i)
-            if count % 60 == 0:
-                alienBalas.append(AlienBala(a.x + a.w//2, a.y + a.h//2))
-
-# ao acertar o asteroid ele ganha uma pontuação 
-            for b in playerBalas:
-                if (b.x >= a.x and b.x <= a.x + a.w) or b.x + b.w >= a.x and b.x + b.w <= a.x + a.w:
-                    if (b.y >= a.y and b.y <= a.y + a.h) or b.y + b.h >= a.y and b.y + b.h <= a.y + a.h:
-                        aliens.pop(i)
+        if count % 1000 == 0:         
+# ao acertar o asteroid ele ganha uma pontuação  
                     
                     # tratar depois colocar para o led acender aqui
                         pontuacao += 50
                         break
 
-        for i, b in enumerate(alienBalas):
-            b.x += b.xv
-            b.y += b.yv
-            if (b.x >= player.x - player.w//2 and b.x <= player.x + player.w//2) or b.x + b.w >= player.x - player.w//2 and b.x + b.w <= player.x + player.w//2:
-                if (b.y >= player.y-player.h//2 and b.y <= player.y + player.h//2) or b.y + b.h >= player.y - player.h//2 and b.y + b.h <= player.y + player.h//2:
-                    vidas -= 1
-                    alienBalas.pop(i)
-                    break
-
         player.attLocalizacao()
-        for b in playerBalas:
+        for b in playerBalas: 
             b.move()
             if b.checkOffScreen():
                 playerBalas.pop(playerBalas.index(b))
@@ -339,28 +240,8 @@ while run:
                         playerBalas.pop(playerBalas.index(b))
                         break
 
-        for s in estrelas:
-            s.x += s.xv
-            s.y += s.yv
-            if s.x < -100 - s.w or s.x > sw + 100 or s.y > sh + 100 or s.y < -100 - s.h:
-                estrelas.pop(estrelas.index(s))
-                break
-            for b in playerBalas:
-                if (b.x >= s.x and b.x <= s.x + s.w) or b.x + b.w >= s.x and b.x + b.w <= s.x + s.w:
-                    if (b.y >= s.y and b.y <= s.y + s.h) or b.y + b.h >= s.y and b.y + b.h <= s.y + s.h:
-                        rapidFire = True
-                        rfStart = count
-                        estrelas.pop(estrelas.index(s))
-                        playerBalas.pop(playerBalas.index(b))
-                        break
-
         if vidas <= 0:
             fimdejogo = True
-
-        if rfStart != -1:
-            if count - rfStart > 500:
-                rapidFire = False
-                rfStart = -1
 
 # controles do jogo
 
@@ -384,20 +265,11 @@ while run:
                 if not fimdejogo:
                     if not rapidFire:
                         playerBalas.append(Bala())
-                        
-            if event.key == pygame.K_m:
-                if isSoundOn:
-                            shoot.play()
-            if event.key == pygame.K_m:
-                isSoundOn = not isSoundOn
             if event.key == pygame.K_TAB:
                 if fimdejogo:
                     fimdejogo = False
                     vidas = 3
                     asteroids.clear()
-                    aliens.clear()
-                    alienBalas.clear()
-                    estrelas.clear()
                     if pontuacao > maximapontuacao:
                         maximapontuacao = pontuacao
                     pontuacao = 0
